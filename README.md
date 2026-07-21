@@ -25,28 +25,28 @@ Customer retention is a critical metric for financial institutions and subscript
 
 ## 📑 Table of Contents
 
-- [📌 Project Overview](#-project-overview)
-- [✨ Features](#-features)
-- [🏗️ Project Architecture](#️-project-architecture)
-- [📁 Repository Structure](#-repository-structure)
-- [💻 Tech Stack](#-tech-stack)
-- [📊 Dataset Analysis](#-dataset-analysis)
-- [⚙️ Data Preprocessing Pipeline](#️-data-preprocessing-pipeline)
-- [🧠 Artificial Neural Network (Classification)](#-artificial-neural-network-classification)
-- [🔍 Hyperparameter Tuning](#-hyperparameter-tuning)
-- [📈 Regression Module](#-regression-module)
-- [🖥️ Streamlit Applications](#️-streamlit-applications)
-  - [Customer Churn Prediction App](#customer-churn-prediction-app)
-  - [Salary Prediction App](#salary-prediction-app)
-- [🛠️ Installation Guide](#️-installation-guide)
-- [🚀 Usage Guide](#-usage-guide)
-- [💾 Model & Artifact Persistence](#-model--artifact-persistence)
-- [📊 Results & Evaluation](#-results--evaluation)
-- [🔮 Future Improvements](#-future-improvements)
-- [🤝 Contributing](#-contributing)
-- [📜 License](#-license)
-- [📬 Contact](#-contact)
-- [🙏 Acknowledgements](#-acknowledgements)
+- [📌 Project Overview](#project-overview)
+- [✨ Features](#features)
+- [🏗️ Project Architecture](#project-architecture)
+- [📁 Repository Structure](#repository-structure)
+- [💻 Tech Stack](#tech-stack)
+- [📊 Dataset Analysis](#dataset-analysis)
+- [⚙️ Data Preprocessing Pipeline](#data-preprocessing-pipeline)
+- [🧠 Artificial Neural Network (Classification)](#artificial-neural-network-classification)
+- [🔍 Hyperparameter Tuning](#hyperparameter-tuning)
+- [📈 Regression Module](#regression-module)
+- [🖥️ Streamlit Applications](#streamlit-applications)
+  - [Customer Churn Prediction App](#customer-churn-prediction-app-apppy)
+  - [Salary Prediction App](#salary-prediction-app-streamlit_regressionpy)
+- [🛠️ Installation Guide](#installation-guide)
+- [🚀 Usage Guide](#usage-guide)
+- [💾 Model & Artifact Persistence](#model-artifact-persistence)
+- [📊 Results & Evaluation](#results-evaluation)
+- [🔮 Future Improvements](#future-improvements)
+- [🤝 Contributing](#contributing)
+- [📜 License](#license)
+- [📬 Contact](#contact)
+- [🙏 Acknowledgements](#acknowledgements)
 
 ---
 
@@ -62,7 +62,7 @@ Customer retention is a critical metric for financial institutions and subscript
 - ✅ **Training Callbacks**: Integrated `TensorBoard` logging for epoch-by-epoch metric tracking and `EarlyStopping` to eliminate overfitting.
 - ✅ **Probability Output**: Direct probability score inference with user-configurable classification thresholds.
 - ✅ **Model Persistence**: Serialized `.h5` Keras neural networks and `.pkl` scikit-learn transformers.
-- ✅ **Clean Repository Structure**: Explicit separation of training notebooks, inference scripts, logs, and deployment apps.
+- ✅ **Clean Project Structure**: Explicit separation of training notebooks, inference scripts, logs, and deployment apps.
 
 ---
 
@@ -104,6 +104,7 @@ ann-classification/
 ├── .python-version              # Python version lock (3.11)
 ├── LICENSE                      # GNU General Public License v3.0
 ├── README.md                    # Project documentation
+├── requirements.txt             # Python dependencies manifest
 │
 ├── Churn_Modelling.csv          # Primary banking dataset (10,000 records)
 │
@@ -345,10 +346,24 @@ The project includes two Streamlit web applications designed for interactive inf
 <details>
 <summary><b>Click to expand Salary Prediction App Details</b></summary>
 
-- **Purpose**: Interactive front-end deploying the regression model to evaluate economic indicators and predict outputs using `regression_model.h5`.
-- **User Inputs**: Mirrors demographic and financial parameter controls.
-- **Workflow**: Preprocesses categorical variables, normalizes input tensors, and evaluates predictions using `regression_model.h5`.
-- **Output**: Renders numerical estimation results.
+- **Purpose**: Interactive front-end application designed to run inference using the pre-trained ANN regression model (`regression_model.h5`), built in `salaryregression.ipynb` to estimate customer financial metrics (`EstimatedSalary`).
+- **User Inputs**:
+  - `Geography`: Selectbox (`France`, `Spain`, `Germany`)
+  - `Gender`: Selectbox (`Female`, `Male`)
+  - `Age`: Slider (`18` to `92`)
+  - `Tenure`: Slider (`0` to `10`)
+  - `Balance`: Numeric Input
+  - `Credit Score`: Numeric Input
+  - `Estimated Salary` / Features: Numeric Input
+  - `Number of Products`: Slider (`1` to `4`)
+  - `Has Credit Card`: Selectbox (`0`, `1`)
+  - `Is Active Member`: Selectbox (`0`, `1`)
+- **Workflow**:
+  1. Captures user input parameter values.
+  2. Encodes categorical variables (`Gender` via `label_encoder_gender.pkl`, `Geography` via `onehot_encoder_geo.pkl`).
+  3. Formats feature DataFrame and scales values using `scaler.pkl`.
+  4. Loads `regression_model.h5` and executes `model.predict(input_data_scaled)`.
+- **Output**: Outputs continuous numerical prediction from `regression_model.h5` (estimating `EstimatedSalary` as modeled in `salaryregression.ipynb`).
 
 </details>
 
