@@ -5,7 +5,7 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Latest-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shashwatfr/ann-classification)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/shashwatfr/Ann-classification-churn)
 
 ---
 
@@ -96,7 +96,7 @@ flowchart TD
 ## 📁 Repository Structure
 
 ```
-ann-classification/
+Ann-classification-churn/
 │
 ├── .devcontainer/               # Container configuration for VS Code Remote Development
 ├── .git/                        # Git version control metadata
@@ -360,8 +360,8 @@ The project includes two Streamlit web applications designed for interactive inf
   - `Is Active Member`: Selectbox (`0`, `1`)
 - **Workflow**:
   1. Captures user input parameter values.
-  2. Encodes categorical variables (`Gender` via `label_encoder_gender.pkl`, `Geography` via `onehot_encoder_geo.pkl`).
-  3. Formats feature DataFrame and scales values using `scaler.pkl`.
+  2. Encodes categorical variables (`Gender` via `label_encoder_gender_reg.pkl`, `Geography` via `onehot_encoder_geo_reg.pkl`).
+  3. Formats feature DataFrame and scales values using `scaler_reg.pkl`.
   4. Loads `regression_model.h5` and executes `model.predict(input_data_scaled)`.
 - **Output**: Outputs continuous numerical prediction from `regression_model.h5` (estimating `EstimatedSalary` as modeled in `salaryregression.ipynb`).
 
@@ -382,8 +382,8 @@ Follow these steps to set up the repository locally.
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/Shashwatfr/ann-classification.git
-   cd ann-classification
+   git clone https://github.com/shashwatfr/Ann-classification-churn.git
+   cd Ann-classification-churn
    ```
 
 2. **Create a Virtual Environment**:
@@ -449,15 +449,20 @@ Open `http://localhost:6006` in your browser.
 
 ## 💾 Model & Artifact Persistence
 
-The pipeline relies on 5 serialized binary artifacts to ensure reproducibility between training and deployment:
+The classification and regression pipelines rely on serialized binary artifacts to ensure reproducibility between training and deployment:
 
-| Artifact File | Library / Format | Stored Content / Role |
+| Artifact File | Library / Format | Pipeline / Role |
 | :--- | :--- | :--- |
-| `model.h5` | Keras / HDF5 | Serialized pre-trained ANN classification model architecture, learned weights, and optimizer state. |
-| `regression_model.h5` | Keras / HDF5 | Serialized pre-trained ANN regression model for `EstimatedSalary`. |
-| `scaler.pkl` | Scikit-Learn / Pickle | Fitted `StandardScaler` containing column mean and variance parameters for input scaling. |
-| `label_encoder_gender.pkl` | Scikit-Learn / Pickle | Fitted `LabelEncoder` mapping `'Female' -> 0` and `'Male' -> 1`. |
-| `onehot_encoder_geo.pkl` | Scikit-Learn / Pickle | Fitted `OneHotEncoder` mapping `'France'`, `'Germany'`, and `'Spain'` to binary column indicators. |
+| `model.h5` | Keras / HDF5 | Classification model for customer churn (`Exited`). |
+| `regression_model.h5` | Keras / HDF5 | Regression model for `EstimatedSalary`. |
+| `scaler.pkl` | Scikit-Learn / Pickle | Classification `StandardScaler` (features include `EstimatedSalary`, exclude `Exited`). |
+| `label_encoder_gender.pkl` | Scikit-Learn / Pickle | Classification `LabelEncoder` for `Gender`. |
+| `onehot_encoder_geo.pkl` | Scikit-Learn / Pickle | Classification `OneHotEncoder` for `Geography`. |
+| `scaler_reg.pkl` | Scikit-Learn / Pickle | Regression `StandardScaler` (features include `Exited`, exclude `EstimatedSalary`). |
+| `label_encoder_gender_reg.pkl` | Scikit-Learn / Pickle | Regression `LabelEncoder` for `Gender`. |
+| `onehot_encoder_geo_reg.pkl` | Scikit-Learn / Pickle | Regression `OneHotEncoder` for `Geography`. |
+
+> 💡 **Pipeline Artifact Isolation Note**: The regression pipeline uses dedicated artifact files (`scaler_reg.pkl`, `label_encoder_gender_reg.pkl`, `onehot_encoder_geo_reg.pkl`) separate from the classification pipeline's artifacts (`scaler.pkl`, `label_encoder_gender.pkl`, `onehot_encoder_geo.pkl`). This ensures that feature set differences between pipelines (e.g., `Exited` vs `EstimatedSalary` as target/feature) remain isolated without state corruption or silent overwrites.
 
 ---
 
